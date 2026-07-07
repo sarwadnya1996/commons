@@ -14,21 +14,17 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class JwtValidator {
-    private final HttpServletRequest request;
     private final JWTVerifier verifier;
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Autowired
-    public JwtValidator(HttpServletRequest request) {
-        this.request = request;
+    public JwtValidator() {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         this.verifier = JWT.require(algorithm).build();
     }
 
-    @Before("@annotation(Authenticate)")
-    public void validateJwtToken() {
-        String bearerToken = request.getHeader("@Autharization");
+    public void validateJwtToken(String bearerToken) {
         if (StringUtil.isNullOrEmpty(bearerToken)) {
             throw new RuntimeException("Invalid JWT or JWT is not present in header");
         }

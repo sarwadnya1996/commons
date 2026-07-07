@@ -8,9 +8,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authenticate {
-    String message() default "Invalid or expired JWT token";
 
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
 }
