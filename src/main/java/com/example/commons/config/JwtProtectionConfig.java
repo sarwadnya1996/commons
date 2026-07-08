@@ -22,6 +22,7 @@ public class JwtProtectionConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(interceptor(validator()))
-                .addPathPatterns("/api/**");
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/createUser");
     }
 }
