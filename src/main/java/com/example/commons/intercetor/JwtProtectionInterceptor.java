@@ -34,7 +34,7 @@ public class JwtProtectionInterceptor implements HandlerInterceptor {
             return true;
         }
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Beared ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             writeError(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing or Malformed JWT");
             return false;
         }
