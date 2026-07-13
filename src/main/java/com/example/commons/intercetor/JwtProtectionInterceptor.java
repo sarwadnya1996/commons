@@ -10,11 +10,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class JwtProtectionInterceptor implements HandlerInterceptor {
 
     public final JwtValidator validator;
     public final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Pattern AUTH_HEADER_PATTERN = Pattern.compile(
+            "^Bearer\\s+[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"
+    );
+    public static boolean isValidJwtFormat(String token) {
+        return token != null && AUTH_HEADER_PATTERN.matcher(token).matches();
+    }
 
     public JwtProtectionInterceptor(JwtValidator validator) {
         this.validator = validator;
@@ -34,8 +41,8 @@ public class JwtProtectionInterceptor implements HandlerInterceptor {
             return true;
         }
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            writeError(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing or Malformed JWT");
+        if (authHeader == null || !authHeader.startsWith("Bearer ") || !isValidJwtFormat(authHeader)) {
+            writeError(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing or Invalid JWT");
             return false;
         }
         String token = authHeader.substring(7);
